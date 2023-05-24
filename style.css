@@ -1,0 +1,14 @@
+@charset "utf-8";
+
+img {
+    display: block;
+    margin: 0 auto;
+    width: 10%;
+    height: 10%;
+}
+
+.slider-item {
+    width: 800%;
+    height: 80%;
+  }
+  
