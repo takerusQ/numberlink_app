@@ -10,12 +10,36 @@
     #gameCanvas {
       border: 1px solid black;
     }
+
+    #game-area {
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    #game-button {
+      padding: 10px 20px;
+      font-size: 20px;
+    }
   </style>
 </head>
 <body>
   <div id="root"></div>
   <canvas id="gameCanvas" width="800" height="600"></canvas>
   <script src="numberlink.js"></script>
+  <div id="game-area">
+    <h2>Click Game</h2>
+    <p id="score">0</p>
+    <button id="game-button">Click me!</button>
+  </div>
+  
+  <script>
+    let score = 0;
+    document.getElementById('game-button').addEventListener('click', function() {
+      score++;
+      document.getElementById('score').innerText = score;
+    });
+  </script>
+  
   <script>
     document.addEventListener('DOMContentLoaded', function() {
     const colorDict = {
