@@ -14,6 +14,166 @@
   <div id="root"></div>
   <script src="main.js"></script>
   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const colorDict = {
+        '1': 'red',
+        '2': 'green',
+        '3': 'blue',
+        '4': 'yellow',
+        '5': 'purple',
+        '6': 'cyan',
+        '7': 'gray' // Add an additional color for number 7
+    };
+
+    const soundDict = {
+        '1': 'do.wav',
+        '2': 're.wav',
+        '3': 'mi.wav',
+        '4': 'fa.wav',
+        '5': 'so.wav',
+        '6': 'la.wav',
+        '7': 'ti.wav' // Add a sound for number 7
+    };
+
+    class GridButton {
+        constructor(element) {
+        this.element = element;
+        this.activeNumber = null;
+        this.lockedNumber = null;
+        this.sound = null;
+
+        this.element.addEventListener('click', () => this.handleClick());
+        }
+
+        handleClick() {
+        if (this.activeNumber === this.element.textContent) {
+            this.activeNumber = null;
+        } else {
+            this.activeNumber = this.element.textContent;
+        }
+
+        this.updateButton();
+        }
+
+        updateButton() {
+        if (this.activeNumber) {
+            this.element.classList.add('active');
+            this.element.style.backgroundColor = colorDict[this.activeNumber];
+            this.playSound();
+        } else {
+            this.element.classList.remove('active');
+            this.element.style.backgroundColor = '';
+        }
+        }
+
+        playSound() {
+        if (this.activeNumber && this.soundDict[this.activeNumber]) {
+            this.sound = new Audio(this.soundDict[this.activeNumber]);
+            this.sound.play();
+        }
+        }
+    }
+
+    class NumberLinkGrid {
+        constructor(container, rows, cols) {
+        this.container = container;
+        this.rows = rows;
+        this.cols = cols;
+        this.gridButtons = [];
+
+        this.generatePuzzle();
+        this.createGrid();
+        }
+
+        generatePuzzle() {
+        const numbers = ['1', '2', '3', '4', '5', '6'];
+        this.puzzle = [];
+
+        for (let i = 0; i < this.rows; i++) {
+            const row = [];
+            for (let j = 0; j < this.cols; j++) {
+            row.push(numbers[0]);
+            }
+            this.puzzle.push(row);
+        }
+
+        const directions = [[0, 1], [0, -1], [1, 0], [-1, 0]];
+
+        for (let k = 1; k < numbers.length; k++) {
+            const startRow = this.selectRandomPosition().row;
+            const startCol = this.selectRandomPosition().col;
+
+            this.puzzle[startRow][startCol] = numbers[k];
+
+            const steps = Math.floor(Math.random() * 11) + 10;
+            let endRow = startRow;
+            let endCol = startCol;
+
+            for (let s = 0; s < steps; s++) {
+            const direction = directions[Math.floor(Math.random() * directions.length)];
+            const newRow = endRow + direction[0];
+            const newCol = endCol + direction[1];
+            if (newRow >= 0 && newRow < this.rows && newCol >= 0 && newCol < this.cols && this.puzzle[newRow][newCol] === numbers[0]) {
+                endRow = newRow;
+                endCol = newCol;
+            }
+            }
+
+            this.puzzle[endRow][endCol] = numbers[k];
+        }
+
+        const onePositions = [];
+        for (let i = 0; i < this.rows; i++) {
+            for (let j = 0; j < this.cols; j++) {
+            if (this.puzzle[i][j] === numbers[0]) {
+                onePositions.push({ row: i, col: j });
+            }
+            }
+        }
+        shuffleArray(onePositions);
+        for (let i = 2; i < onePositions.length; i++) {
+            const position = onePositions[i];
+            this.puzzle[position.row][position.col] = ' ';
+        }
+        }
+
+        selectRandomPosition() {
+        const row = Math.floor(Math.random() * this.rows);
+        const col = Math.floor(Math.random() * this.cols);
+        while (this.puzzle[row][col] !== '1') {
+            const row = Math.floor(Math.random() * this.rows);
+            const col = Math.floor(Math.random() * this.cols);
+        }
+        return { row, col };
+        }
+
+        createGrid() {
+        for (let i = 0; i < this.rows; i++) {
+            for (let j = 0; j < this.cols; j++) {
+            const button = document.createElement('button');
+            button.textContent = this.puzzle[i][j];
+            button.className = 'grid-button';
+            this.container.appendChild(button);
+            const gridButton = new GridButton(button);
+            this.gridButtons.push(gridButton);
+            }
+        }
+        }
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    const container = document.getElementById('grid-container');
+    const rows = 12;
+    const cols = 12;
+    const numberLinkGrid = new NumberLinkGrid(container, rows, cols);
+    });
+
     // Reactコンポーネントの組み込み
     class NumberLinkApp extends React.Component {
         constructor(props) {
