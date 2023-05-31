@@ -8,6 +8,7 @@
   <body>
     <div id="grid-container"></div>
     <div id="root"></div>
+    <button id="reset-button" onclick="resetGame()">Reset</button>
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         const colorDict = {
@@ -105,8 +106,7 @@
               for (let s = 0; s < steps; s++) {
                 const direction = directions[Math.floor(Math.random() * directions.length)];
                 const newRow = endRow + direction[0];
-                const newCol = end
-                Col + direction[1];
+                const newCol = endCol + direction[1];
                 if (newRow >= 0 && newRow < this.rows && newCol >= 0 && newCol < this.cols && this.puzzle[newRow][newCol] === numbers[0]) {
                   endRow = newRow;
                   endCol = newCol;
@@ -132,8 +132,8 @@
           }
 
           selectRandomPosition() {
-            const row = Math.floor(Math.random() * this.rows);
-            const col = Math.floor(Math.random() * this.cols);
+            let row = Math.floor(Math.random() * this.rows);
+            let col = Math.floor(Math.random() * this.cols);
             while (this.puzzle[row][col] !== '1') {
               row = Math.floor(Math.random() * this.rows);
               col = Math.floor(Math.random() * this.cols);
@@ -162,6 +162,12 @@
           }
         }
 
+        function resetGame() {
+          const container = document.getElementById('grid-container');
+          container.innerHTML = '';
+          const numberLinkGrid = new NumberLinkGrid(container, 12, 12);
+        }
+
         const container = document.getElementById('grid-container');
         const rows = 12;
         const cols = 12;
@@ -173,163 +179,164 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script type="text/babel">
       class NumberLinkApp extends React.Component {
-          constructor(props) {
-              super(props);
-              this.state = {
-                  activeNumber: null,
-                  lockedNumber: null,
-              };
-              this.colorDict = {
-                  '1': 'red',
-                  '2': 'green',
-                  '3': 'blue',
-                  '4': 'yellow',
-                  '5': 'purple',
-                  '6': 'cyan',
-                  '7': 'gray' // Add an additional color for number 7
-              };
-          }
-
-          handleButtonClick = (number) => {
-              if (this.state.activeNumber === number) {
-                  this.setState({ activeNumber: null });
-              } else {
-                  this.setState({ activeNumber: number });
-              }
+        constructor(props) {
+          super(props);
+          this.state = {
+            activeNumber: null,
+            lockedNumber: null,
           };
-
-          handleCellClick = (cellNumber) => {
-              const { activeNumber } = this.state;
-              if (activeNumber && cellNumber === ' ') {
-                  // Make API request to update the grid with the selected number
-                  console.log(`Clicked on cell ${cellNumber}`);
-              }
+          this.colorDict = {
+            '1': 'red',
+            '2': 'green',
+            '3': 'blue',
+            '4': 'yellow',
+            '5': 'purple',
+            '6': 'cyan',
+            '7': 'gray' // Add an additional color for number 7
           };
+        }
 
-          render() {
-              const { activeNumber } = this.state;
-              return (
-                  <div>
-                      {/* グリッドを表示 */}
-                      <div className="grid-container">
-                          {/* セルのクリックイベントをハンドリング */}
-                          <div className="grid-cell" onClick={() => this.handleCellClick(1)}>1</div>
-                          <div className="grid-cell" onClick={() => this.handleCellClick(2)}>2</div>
-                          <div className="grid-cell" onClick={() => this.handleCellClick(3)}>3</div>
-                          <div className="grid-cell" onClick={() => this.handleCellClick(4)}>4</div>
-                          <div className="grid-cell" onClick={() => this.handleCellClick(5)}>5</div>
-                          <div className="grid-cell" onClick={() => this.handleCellClick(6)}>6</div>
-                          <div className="grid-cell" onClick={() => this.handleCellClick(7)}>7</div>
-                      </div>
-                      {/* ボタンを表示 */}
-                      <button
-                          className={`number-button ${activeNumber === '1' ? 'active' : ''}`}
-                          onClick={() => this.handleButtonClick('1')}
-                      >
-                          1
-                      </button>
-                      <button
-                          className={`number-button ${activeNumber === '2' ? 'active' : ''}`}
-                          onClick={() => this.handleButtonClick('2')}
-                      >
-                          2
-                      </button>
-                      <button
-                          className={`number-button ${activeNumber === '3' ? 'active' : ''}`}
-                          onClick={() => this.handleButtonClick('3')}
-                      >
-                          3
-                      </button>
-                      <button
-                          className={`number-button ${activeNumber === '4' ? 'active' : ''}`}
-                          onClick={() => this.handleButtonClick('4')}
-                      >
-                          4
-                      </button>
-                      <button
-                          className={`number-button ${activeNumber === '5' ? 'active' : ''}`}
-                          onClick={() => this.handleButtonClick('5')}
-                      >
-                          5
-                      </button>
-                      <button
-                          className={`number-button ${activeNumber === '6' ? 'active' : ''}`}
-                          onClick={() => this.handleButtonClick('6')}
-                      >
-                          6
-                      </button>
-                      <button
-                          className={`number-button ${activeNumber === '7' ? 'active' : ''}`}
-                          onClick={() => this.handleButtonClick('7')}
-                      >
-                          7
-                      </button>
-                  </div>
-              );
+        handleButtonClick = (number) => {
+          if (this.state.activeNumber === number) {
+            this.setState({ activeNumber: null });
+          } else {
+            this.setState({ activeNumber: number });
           }
+        };
+
+        handleCellClick = (cellNumber) => {
+          const { activeNumber } = this.state;
+          if (activeNumber && cellNumber === ' ') {
+            // Make API request to update the grid with the selected number
+            console.log(`Clicked on cell ${cellNumber}`);
+          }
+        };
+
+        render() {
+          const { activeNumber } = this.state;
+          return (
+            <div>
+              {/* グリッドを表示 */}
+              <div className="grid-container">
+                {/* セルのクリックイベントをハンドリング */}
+                <div className="grid-cell" onClick={() => this.handleCellClick(1)}>1</div>
+                <div className="grid-cell" onClick={() => this.handleCellClick(2)}>2</div>
+                <div className="grid-cell" onClick={() => this.handleCellClick(3)}>3</div>
+                <div className="grid-cell" onClick={() => this.handleCellClick(4)}>4</div>
+                <div className="grid-cell" onClick={() => this.handleCellClick(5)}>5</div>
+                <div className="grid-cell" onClick={() => this.handleCellClick(6)}>6</div>
+                <div className="grid-cell" onClick={() => this.handleCellClick(7)}>7</div>
+              </div>
+              {/* ボタンを表示 */}
+              <button
+                className={`number-button ${activeNumber === '1' ? 'active' : ''}`}
+                onClick={() => this.handleButtonClick('1')}
+              >
+                1
+              </button>
+              <button
+                className={`number-button ${activeNumber === '2' ? 'active' : ''}`}
+                onClick={() => this.handleButtonClick('2')}
+              >
+                2
+              </button>
+              <button
+                className={`number-button ${activeNumber === '3' ? 'active' : ''}`}
+                onClick={() => this.handleButtonClick('3')}
+              >
+                3
+              </button>
+              <button
+                className={`number-button ${activeNumber === '4' ? 'active' : ''}`}
+                onClick={() => this.handleButtonClick('4')}
+              >
+                4
+              </button>
+              <button
+                className={`number-button ${activeNumber === '5' ? 'active' : ''}`}
+                onClick={() => this.handleButtonClick('5')}
+              >
+                5
+              </button>
+              <button
+                className={`number-button ${activeNumber === '6' ? 'active' : ''}`}
+                onClick={() => this.handleButtonClick('6')}
+              >
+                6
+              </button>
+              <button
+                className={`number-button ${activeNumber === '7' ? 'active' : ''}`}
+                onClick={() => this.handleButtonClick('7')}
+              >
+                7
+              </button>
+            </div>
+          );
+        }
       }
 
       ReactDOM.render(<NumberLinkApp />, document.getElementById('root'));
-  </script>
+    </script>
 
-<style>
-  .grid-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    margin: 20px;
-  }
+    <style>
+      .grid-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin: 20px;
+      }
 
-  .grid-cell {
-    width: 50px;
-    height: 50px;
-    border: 1px solid black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 20px;
-  }
+      .grid-cell {
+        width: 50px;
+        height: 50px;
+        border: 1px solid black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+      }
 
-  .number-button {
-    width: 50px;
-    height: 50px;
-    margin: 5px;
-  }
+      .number-button {
+        width: 50px;
+        height: 50px;
+        margin: 5px;
+      }
 
-  .number-button.active {
-    background-color: lightgray;
-  }
-</style>
-<!-- umigame_sanの要素を追加 -->
-<div class="menu-bar">
-  <img src="top.svg" alt="umigame_san">
-  <div class="menu-item">
-    <a href="https://nd-phenix60.vercel.app/">Works</a>
-  </div>
-  <div class="menu-item">
-    <a href="#">Researches</a>
-    <div class="pop-up-menu">
-      <div class="menu-item">menu1</div>
-      <div class="menu-item">menu2</div>
+      .number-button.active {
+        background-color: lightgray;
+      }
+    </style>
+
+    <!-- umigame_sanの要素を追加 -->
+    <div class="menu-bar">
+      <img src="top.svg" alt="umigame_san">
+      <div class="menu-item">
+        <a href="https://nd-phenix60.vercel.app/">Works</a>
+      </div>
+      <div class="menu-item">
+        <a href="#">Researches</a>
+        <div class="pop-up-menu">
+          <div class="menu-item">menu1</div>
+          <div class="menu-item">menu2</div>
+        </div>
+      </div>
+      <div class="menu-item">
+        <a href="#">Contacts</a>
+      </div>
     </div>
-  </div>
-  <div class="menu-item">
-    <a href="#">Contacts</a>
-  </div>
-</div>
 
-<div class="hero">
-  <h1 style="text-align: center;">Welcome to umigame_san</h1>
-  <video autoplay loop muted>
-    <source src="https://coco-factory.jp/ugokuweb/wp-content/themes/ugokuweb/data/6-3-1/video/movie.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-</div>
+    <div class="hero">
+      <h1 style="text-align: center;">Welcome to umigame_san</h1>
+      <video autoplay loop muted>
+        <source src="https://coco-factory.jp/ugokuweb/wp-content/themes/ugokuweb/data/6-3-1/video/movie.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
 
-<footer>
-  <p>Copyright &copy; 2023 Your Company Name</p>
-</footer>
+    <footer>
+      <p>Copyright &copy; 2023 Your Company Name</p>
+    </footer>
 
-</body>
+  </body>
 </html>
